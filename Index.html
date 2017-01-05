@@ -1,0 +1,38 @@
+<!-- Use a templated HTML printing scriptlet to import common stylesheet. -->
+<?!= HtmlService.createHtmlOutputFromFile('Stylesheet').getContent(); ?>
+<html>
+  <body>
+    <h1 id="main-heading">Loading...</h1>
+    <div id="dashboard-div">
+      <div id="control-div">
+        <div id="slider-div">
+        </div>
+        <div id="selector-div0">
+        </div>
+        <br>
+        <div id="selector-div1">
+        </div>
+        <br>
+        <div id="selector-div2">
+        </div>
+        <br>
+        <div id="selector-div3">
+        </div>
+      </div>
+      <div id="charts-div">
+        <div id="table-div">
+        </div>
+      </div>
+    </div>
+    <div class="hidden" id="error-message">
+    </div>
+  </body>
+</html>
+
+<!-- Store data passed to template here, so it is available to the
+     imported JavaScript. -->
+<script>
+</script>
+
+<!-- Use a templated HTML printing scriptlet to import JavaScript. -->
+<?!= HtmlService.createHtmlOutputFromFile('JavaScript').getContent(); ?>

@@ -1,0 +1,84 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript"  src="https://www.google.com/jsapi"></script>
+
+<script>
+  // Load the Visualization API and desired package(s).
+  google.load('visualization', '1.0', {'packages':['controls']});
+  /**
+   * Run initializations on dialog load.
+   */
+  $(function() {
+    // Set a callback to run when the Google Visualization API is loaded.
+    // Note: could also be accomplished via google.load options.
+    google.setOnLoadCallback(sendQuery);
+    // Assign handler functions to dialog elements here, if needed.
+    // Call the server here to retrieve any information needed to build
+    // the dialog, if necessary.
+  });
+
+  function sendQuery() {
+    google.script.run
+      .withSuccessHandler(drawDashboard)
+      .withFailureHandler(function(msg) {
+            // Respond to failure conditions here.
+            $('#main-heading').text(msg);
+            $('#main-heading').addClass("error");
+            $('#error-message').show();
+          })
+      .getSpreadsheetData();
+  }
+
+  function drawDashboard(response) {
+    $('#main-heading').addClass("hidden");
+    if (response == null) {
+      alert('Error: Invalid source data.')
+      return;
+    }
+    else {
+      // Transmogrify spreadsheet contents (array) to a DataTable object
+      var data = google.visualization.arrayToDataTable(response,false);
+      var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard-div'));
+      var table = new google.visualization.ChartWrapper({
+        'chartType': 'Table',
+        'containerId': 'table-div'
+      });
+
+
+      var genderPicker = new google.visualization.ControlWrapper({
+        'controlType': 'CategoryFilter',
+        'containerId': 'selector-div1',
+        'options': {
+          'filterColumnLabel': 'RSID'
+        }
+      });
+        var statPicker = new google.visualization.ControlWrapper({
+        'controlType': 'CategoryFilter',
+        'containerId': 'selector-div0',
+        'options': {
+          'filterColumnLabel': 'Status'
+        }
+      });
+      var datePicker = new google.visualization.ControlWrapper({
+        'controlType': 'CategoryFilter',
+        'containerId': 'selector-div2',
+        'options': {
+          'filterColumnLabel': 'Date Added'
+        }
+      });
+      var tecPicker = new google.visualization.ControlWrapper({
+        'controlType': 'CategoryFilter',
+        'containerId': 'selector-div3',
+        'options': {
+          'filterColumnLabel': 'TEC Credit'
+        }
+      });
+      // Set up dependencies between controls and charts
+      dashboard.bind(genderPicker, [table]);
+      dashboard.bind(statPicker, [table]);
+      dashboard.bind(datePicker, [table]);
+      dashboard.bind(tecPicker, [table]);
+      // Draw all visualization components of the dashboard
+      dashboard.draw(data);
+    }
+  }
+</script>
